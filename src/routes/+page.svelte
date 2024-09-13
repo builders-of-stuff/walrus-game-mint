@@ -11,9 +11,9 @@
     // Fetch owned walruses from the blockchain
     // This is a placeholder, replace with actual blockchain interaction
     ownedWalruses = [
-      { id: 1, name: 'Wally' },
-      { id: 2, name: 'Tusker' },
-      { id: 3, name: 'Blubber' }
+      // { id: 1, name: 'Wally' },
+      // { id: 2, name: 'Tusker' },
+      // { id: 3, name: 'Blubber' }
     ];
   });
 
@@ -39,10 +39,7 @@
         <h1 class="mb-4 text-4xl font-bold md:text-5xl">
           Own a walrus, grow your penguin farm
         </h1>
-        <p class="mb-8 text-xl opacity-80">
-          Dive into the coolest Web3 game on Sui. Collect unique walruses and build your
-          penguin empire!
-        </p>
+        <p class="mb-8 text-xl opacity-80">Catch fish, buy penguins, profit</p>
         <button
           on:click={mintWalrus}
           class="transform rounded-lg bg-white px-6 py-3 text-xl font-bold text-purple-600 transition duration-300 ease-in-out hover:scale-105 hover:bg-opacity-90"
