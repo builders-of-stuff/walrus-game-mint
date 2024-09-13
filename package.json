@@ -41,6 +41,8 @@
   "dependencies": {
     "@builders-of-stuff/svelte-sui-wallet-adapter": "^1.1.0",
     "@mysten/sui": "^1.9.0",
+    "@mysten/sui.js": "^0.54.1",
+    "base-x": "^5.0.0",
     "bits-ui": "^0.21.13",
     "clsx": "^2.1.1",
     "svelte-radix": "^1.1.1",
