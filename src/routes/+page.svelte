@@ -1,5 +1,9 @@
 <script>
   import { onMount } from 'svelte';
+  import {
+    ConnectButton,
+    testnetWalletAdapter as walletAdapter
+  } from '@builders-of-stuff/svelte-sui-wallet-adapter';
 
   let ownedWalruses = [];
 
@@ -24,16 +28,21 @@
   }
 </script>
 
-<main
-  class="flex min-h-screen items-center bg-gradient-to-br from-blue-400 to-purple-500 text-white"
->
-  <div class="container mx-auto px-4 py-8 md:py-16">
+<main class="min-h-screen bg-gradient-to-br from-blue-400 to-purple-500 text-white">
+  <div class="container mx-auto px-4 py-4">
+    <div class="mb-8 flex justify-end">
+      <ConnectButton {walletAdapter} />
+    </div>
+
     <div class="flex flex-col items-center justify-between gap-12 md:flex-row">
       <div class="w-full md:w-1/2">
         <h1 class="mb-4 text-4xl font-bold md:text-5xl">
           Own a walrus, grow your penguin farm
         </h1>
-        <p class="mb-8 text-xl opacity-80">Collect fish, buy penguins, profit</p>
+        <p class="mb-8 text-xl opacity-80">
+          Dive into the coolest Web3 game on Sui. Collect unique walruses and build your
+          penguin empire!
+        </p>
         <button
           on:click={mintWalrus}
           class="transform rounded-lg bg-white px-6 py-3 text-xl font-bold text-purple-600 transition duration-300 ease-in-out hover:scale-105 hover:bg-opacity-90"
