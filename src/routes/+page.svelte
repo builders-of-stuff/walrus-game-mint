@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import {
     ConnectButton,
     testnetWalletAdapter as walletAdapter
@@ -7,7 +7,7 @@
 
   import Walrus from '$lib/assets/walrus-250.png';
   import { mintWalrus } from '$lib/shared/shared.sdk';
-  import { WALRUS_GAME_PACKAGE_ID } from '$lib/shared/shared.stuff';
+  import { WALRUS_GAME_PACKAGE_ID, walrusLink } from '$lib/shared/shared.stuff';
 
   /**
    * - Fetch walruses upon connect
@@ -15,9 +15,10 @@
    * - link to walrus site
    */
 
+  let hasCheckedOwnedObjects = $state(false);
   let selectedWalrusId = $state('');
 
-  let ownedWalruses = $state([]);
+  let ownedWalruses = $state([] as any);
 
   const handleWalrusMint = async () => {
     const mintResponse = (await mintWalrus()) as any;
@@ -26,25 +27,55 @@
       return obj?.objectType === `${WALRUS_GAME_PACKAGE_ID}::walrus::Walrus`;
     })?.objectId;
 
+    console.log(' walrusId: ', walrusId);
+
     if (walrusId) {
       selectedWalrusId = walrusId;
+      ownedWalruses = [...ownedWalruses, walrusId];
     }
   };
 
-  onMount(() => {
-    // Fetch owned walruses from the blockchain
-    // This is a placeholder, replace with actual blockchain interaction
-    ownedWalruses = [
-      { id: 1, name: 'Wally' },
-      { id: 2, name: 'Tusker' },
-      { id: 3, name: 'Blubber' }
-    ];
+  /**
+   * ==========================================================================
+   */
+
+  $effect(() => {
+    console.log('ownedWalruses: ', $state.snapshot(ownedWalruses));
   });
 
-  function goToExplorer(walrusId: string) {
-    // Implement navigation to explorer
-    alert(`Navigating to explorer for walrus ${walrusId}`);
-  }
+  /**
+   * Fetch existing walrus upon connect
+   */
+  $effect(() => {
+    if (!walletAdapter.isConnected || hasCheckedOwnedObjects) {
+      return;
+    }
+
+    untrack(() => {
+      (async () => {
+        const ownedObjects = await walletAdapter.suiClient.getOwnedObjects({
+          owner: walletAdapter?.currentAccount?.address as any,
+          filter: {
+            StructType: `${WALRUS_GAME_PACKAGE_ID}::walrus::Walrus`
+          },
+          options: {
+            showContent: true,
+            showDisplay: true,
+            showOwner: true,
+            showType: true,
+            showStorageRebate: true
+          }
+        });
+
+        console.log('ownedObjects: ', ownedObjects);
+
+        const walruses = ownedObjects?.data?.map((obj: any) => obj.data.objectId);
+        ownedWalruses = walruses;
+
+        hasCheckedOwnedObjects = true;
+      })();
+    });
+  });
 </script>
 
 <main class="min-h-screen bg-gradient-to-br from-blue-400 to-purple-500 text-white">
@@ -78,13 +109,15 @@
           <h2 class="mb-4 text-2xl font-semibold">Your Walruses</h2>
           <div class="max-h-48 overflow-y-auto rounded-lg bg-white bg-opacity-10 p-4">
             {#if ownedWalruses.length > 0}
-              {#each ownedWalruses as walrus}
-                <button
-                  onclick={() => goToExplorer(walrus.id)}
+              {#each ownedWalruses as walrusId}
+                <a
+                  href={walrusLink(walrusId)}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   class="mb-2 block w-full rounded p-2 text-left transition duration-200 ease-in-out hover:bg-white hover:bg-opacity-10"
                 >
-                  {walrus.name} (ID: {walrus.id})
-                </button>
+                  {walrusId}
+                </a>
               {/each}
             {:else}
               <p class="text-white text-opacity-80">
