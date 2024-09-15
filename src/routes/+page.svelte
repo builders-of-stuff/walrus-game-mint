@@ -91,12 +91,22 @@
           <p>Grow a penguin farm</p>
         </h1>
         <p class="mb-8 text-xl opacity-80">Catch fish, buy penguins, profit</p>
-        <button
-          onclick={handleWalrusMint}
-          class="transform rounded-lg bg-white px-6 py-3 text-xl font-bold text-purple-600 transition duration-300 ease-in-out hover:scale-105 hover:bg-opacity-90"
-        >
-          Mint walrus
-        </button>
+
+        {#if !walletAdapter.isConnected}
+          <button
+            disabled
+            class="transform cursor-not-allowed rounded-lg bg-gray-300 px-6 py-3 text-xl font-bold text-gray-500 opacity-60"
+          >
+            Connect Wallet to Mint
+          </button>
+        {:else}
+          <button
+            onclick={handleWalrusMint}
+            class="transform rounded-lg bg-white px-6 py-3 text-xl font-bold text-purple-600 transition duration-300 ease-in-out hover:scale-105 hover:bg-opacity-90"
+          >
+            Mint walrus
+          </button>
+        {/if}
       </div>
 
       <div class="flex w-full flex-col items-center md:w-1/2">
